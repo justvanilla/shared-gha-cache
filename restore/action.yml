@@ -1,5 +1,5 @@
-name: 'Restore Cache'
-description: 'Restore Cache artifacts like dependencies and build outputs to improve workflow execution time'
+name: 'Restore Cache (AWS S3)'
+description: 'Restore Cache artifacts stored in S3 like dependencies and build outputs to improve workflow execution time'
 author: 'GitHub'
 inputs:
   path:
