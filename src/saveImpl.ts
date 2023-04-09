@@ -1,10 +1,10 @@
 import * as core from "@actions/core";
-import { S3ClientConfig } from "@aws-sdk/client-s3";
 
 import * as cache from "./backend";
 import { Events, Inputs, State } from "./constants";
 import { IStateProvider } from "./stateProvider";
 import * as utils from "./utils/actionUtils";
+import { getConfig } from "./utils/options";
 
 // Catch and log any unhandled exceptions.  These exceptions can leak out of the uploadChunk method in
 // @actions/toolkit when a failed upload closes the file descriptor causing any in-process reads to
@@ -52,16 +52,8 @@ async function saveImpl(stateProvider: IStateProvider): Promise<number | void> {
         const cachePaths = utils.getInputAsArray(Inputs.Path, {
             required: true
         });
-
-        const s3Config = {
-            credentials: {
-                accessKeyId: core.getInput(Inputs.AwsAccessKeyId),
-                secretAccessKey: core.getInput(Inputs.AwsSecretAccessKey)
-            },
-            region: core.getInput(Inputs.AwsRegion)
-        } as S3ClientConfig;
-
         const s3Bucket = core.getInput(Inputs.AwsBucket);
+        const s3Config = getConfig();
 
         cacheId = await cache.saveCache(
             cachePaths,
