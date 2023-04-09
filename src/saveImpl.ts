@@ -1,6 +1,7 @@
-import * as cache from "@actions/cache";
 import * as core from "@actions/core";
+import { S3ClientConfig } from "@aws-sdk/client-s3";
 
+import * as cache from "./backend";
 import { Events, Inputs, State } from "./constants";
 import { IStateProvider } from "./stateProvider";
 import * as utils from "./utils/actionUtils";
@@ -52,15 +53,22 @@ async function saveImpl(stateProvider: IStateProvider): Promise<number | void> {
             required: true
         });
 
-        const enableCrossOsArchive = utils.getInputAsBool(
-            Inputs.EnableCrossOsArchive
-        );
+        const s3Config = {
+            credentials: {
+                accessKeyId: core.getInput(Inputs.AwsAccessKeyId),
+                secretAccessKey: core.getInput(Inputs.AwsSecretAccessKey)
+            },
+            region: core.getInput(Inputs.AwsRegion)
+        } as S3ClientConfig;
+
+        const s3Bucket = core.getInput(Inputs.AwsBucket);
 
         cacheId = await cache.saveCache(
             cachePaths,
             primaryKey,
             { uploadChunkSize: utils.getInputAsInt(Inputs.UploadChunkSize) },
-            enableCrossOsArchive
+            s3Config,
+            s3Bucket
         );
 
         if (cacheId != -1) {

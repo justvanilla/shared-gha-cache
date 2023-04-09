@@ -1,13 +1,13 @@
-import * as cache from "@actions/cache";
 import * as core from "@actions/core";
 
+import * as cache from "../src/backend";
 import { Events, Inputs, RefKey } from "../src/constants";
 import run from "../src/saveOnly";
 import * as actionUtils from "../src/utils/actionUtils";
 import * as testUtils from "../src/utils/testUtils";
 
 jest.mock("@actions/core");
-jest.mock("@actions/cache");
+jest.mock("../src/backend");
 jest.mock("../src/utils/actionUtils");
 
 beforeAll(() => {
@@ -99,7 +99,8 @@ test("save with valid inputs uploads a cache", async () => {
         {
             uploadChunkSize: 4000000
         },
-        false
+        { credentials: { accessKeyId: "", secretAccessKey: "" }, region: "" },
+        ""
     );
 
     expect(failedMock).toHaveBeenCalledTimes(0);
@@ -131,7 +132,8 @@ test("save failing logs the warning message", async () => {
         {
             uploadChunkSize: 4000000
         },
-        false
+        { credentials: { accessKeyId: "", secretAccessKey: "" }, region: "" },
+        ""
     );
 
     expect(warningMock).toHaveBeenCalledTimes(1);

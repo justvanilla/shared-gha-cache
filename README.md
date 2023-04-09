@@ -1,4 +1,19 @@
-# Cache action
+# Cache action (AWS S3)
+
+<img src="https://www.justvanilla.com/wp-content/uploads/2023/04/Vanilla-Logo.svg" height="50" align="left"></img>
+
+> This repo is a drop-in replacement for standard cache action to make it use AWS S3. You can replace cache calls with `uses: justvanilla/shared-gha-cache@s3` directly. Default behavior will be identical. To make task use S3 bucket instead, provide the following inputs:
+> * **aws-region**: us-east-1
+> * **aws-bucket**: the-bucketest-bucket
+> * **aws-access-key-id**: key id for account having RW access to the bucket
+> * **aws-secret-access-key**: secret for account having RW access to the bucket
+
+> **Note**
+> Action is supported and periodically rebased against original 👍
+
+Lots of the backend is based on https://github.com/whywaita/actions-cache-s3 ❤️
+
+----------------
 
 This action allows caching dependencies and build outputs to improve workflow execution time.
 
@@ -53,6 +68,10 @@ If you are using a `self-hosted` Windows runner, `GNU tar` and `zstd` are requir
 * `enableCrossOsArchive` - An optional boolean when enabled, allows Windows runners to save or restore caches that can be restored or saved respectively on other platforms. Default: `false`
 * `fail-on-cache-miss` - Fail the workflow if cache entry is not found. Default: `false`
 * `lookup-only` - If true, only checks if cache entry exists and skips download. Does not change save cache behavior. Default: `false`
+* `aws-region` - Region in which S3 Bucket is located
+* `aws-bucket` - S3 Bucket to use
+* `aws-access-key-id` - key id for account having RW access to the bucket
+* `aws-secret-access-key` - secret for account having RW access to the bucket
 
 #### Environment Variables
 
@@ -90,7 +109,7 @@ jobs:
 
     - name: Cache Primes
       id: cache-primes
-      uses: actions/cache@v3
+      uses: justvanilla/shared-gha-cache@s3
       with:
         path: prime-numbers
         key: ${{ runner.os }}-primes
@@ -186,12 +205,16 @@ A cache key can include any of the contexts, functions, literals, and operators 
 For example, using the [`hashFiles`](https://docs.github.com/en/actions/learn-github-actions/expressions#hashfiles) function allows you to create a new cache when dependencies change.
 
 ```yaml
-  - uses: actions/cache@v3
+  - uses: justvanilla/shared-gha-cache@s3
     with:
       path: |
         path/to/dependencies
         some/other/dependencies
       key: ${{ runner.os }}-${{ hashFiles('**/lockfiles') }}
+      aws-region: ${{ secrets.CACHE_AWS_REGION }}
+      aws-bucket: ${{ secrets.CACHE_AWS_BUCKET }}
+      aws-access-key-id: ${{ secrets.CACHE_AWS_ACCESS_KEY_ID }}
+      aws-secret-access-key: ${{ secrets.CACHE_AWS_SECRET_ACCESS_KEY }}
 ```
 
 Additionally, you can use arbitrary command output in a cache key, such as a date or software version:
@@ -204,17 +227,21 @@ Additionally, you can use arbitrary command output in a cache key, such as a dat
       echo "date=$(/bin/date -u "+%Y%m%d")" >> $GITHUB_OUTPUT
     shell: bash
 
-  - uses: actions/cache@v3
+  - uses: justvanilla/shared-gha-cache@s3
     with:
       path: path/to/dependencies
       key: ${{ runner.os }}-${{ steps.get-date.outputs.date }}-${{ hashFiles('**/lockfiles') }}
+      aws-region: ${{ secrets.CACHE_AWS_REGION }}
+      aws-bucket: ${{ secrets.CACHE_AWS_BUCKET }}
+      aws-access-key-id: ${{ secrets.CACHE_AWS_ACCESS_KEY_ID }}
+      aws-secret-access-key: ${{ secrets.CACHE_AWS_SECRET_ACCESS_KEY }}
 ```
 
 See [Using contexts to create cache keys](https://help.github.com/en/actions/configuring-and-managing-workflows/caching-dependencies-to-speed-up-workflows#using-contexts-to-create-cache-keys)
 
 ## Cache Limits
 
-A repository can have up to 10GB of caches. Once the 10GB limit is reached, older caches will be evicted based on when the cache was last accessed.  Caches that are not accessed within the last week will also be evicted.
+Since the data is stored to AWS bucket of your own management, you are the kin
 
 ## Skipping steps based on cache-hit
 
@@ -226,7 +253,7 @@ Example:
 steps:
   - uses: actions/checkout@v3
 
-  - uses: actions/cache@v3
+  - uses: justvanilla/shared-gha-cache@s3
     id: cache
     with:
       path: path/to/dependencies
@@ -258,7 +285,7 @@ jobs:
 
       - name: Cache Primes
         id: cache-primes
-        uses: actions/cache@v3
+        uses: justvanilla/shared-gha-cache@s3
         with:
           path: prime-numbers
           key: primes
@@ -269,7 +296,7 @@ jobs:
 
       - name: Cache Numbers
         id: cache-numbers
-        uses: actions/cache@v3
+        uses: justvanilla/shared-gha-cache@s3
         with:
           path: numbers
           key: primes
@@ -285,7 +312,7 @@ jobs:
 
       - name: Cache Primes
         id: cache-primes
-        uses: actions/cache@v3
+        uses: justvanilla/shared-gha-cache@s3
         with:
           path: prime-numbers
           key: primes

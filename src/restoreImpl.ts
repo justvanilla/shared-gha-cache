@@ -1,6 +1,7 @@
-import * as cache from "@actions/cache";
 import * as core from "@actions/core";
+import { S3ClientConfig } from "@aws-sdk/client-s3";
 
+import * as cache from "./backend";
 import { Events, Inputs, Outputs, State } from "./constants";
 import { IStateProvider } from "./stateProvider";
 import * as utils from "./utils/actionUtils";
@@ -31,9 +32,16 @@ async function restoreImpl(
         const cachePaths = utils.getInputAsArray(Inputs.Path, {
             required: true
         });
-        const enableCrossOsArchive = utils.getInputAsBool(
-            Inputs.EnableCrossOsArchive
-        );
+        const s3Config = {
+            credentials: {
+                accessKeyId: core.getInput(Inputs.AwsAccessKeyId),
+                secretAccessKey: core.getInput(Inputs.AwsSecretAccessKey)
+            },
+            region: core.getInput(Inputs.AwsRegion)
+        } as S3ClientConfig;
+
+        const s3Bucket = core.getInput(Inputs.AwsBucket);
+
         const failOnCacheMiss = utils.getInputAsBool(Inputs.FailOnCacheMiss);
         const lookupOnly = utils.getInputAsBool(Inputs.LookupOnly);
 
@@ -42,7 +50,8 @@ async function restoreImpl(
             primaryKey,
             restoreKeys,
             { lookupOnly: lookupOnly },
-            enableCrossOsArchive
+            s3Config,
+            s3Bucket
         );
 
         if (!cacheKey) {
