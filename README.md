@@ -1,4 +1,4 @@
-# Cache action (S3 fork)
+# Cache action (AWS S3)
 
 <img src="https://www.justvanilla.com/wp-content/uploads/2023/04/Vanilla-Logo.svg" height="50" align="left"></img>
 
