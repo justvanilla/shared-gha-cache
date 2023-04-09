@@ -14,3 +14,10 @@ allowed:
 reviewed:
   npm:
   - sax
+  - escodegen
+  - estraverse
+  - esutils
+  - ieee754
+  - readable-stream
+  - source-map
+  - string_decoder
