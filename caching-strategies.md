@@ -12,9 +12,13 @@ This document lists some of the strategies (and example workflows if possible) w
 jobs:
   build:
     runs-on: ubuntu-latest
-    - uses: actions/cache@v3
+    - uses: justvanilla/shared-gha-cache-s3@v3
       with:
         key: ${{ some-metadata }}-cache
+        aws-region: ${{ secrets.CACHE_AWS_REGION }}
+        aws-bucket: ${{ secrets.CACHE_AWS_BUCKET }}
+        aws-access-key-id: ${{ secrets.CACHE_AWS_ACCESS_KEY_ID }}
+        aws-secret-access-key: ${{ secrets.CACHE_AWS_SECRET_ACCESS_KEY }}
 ```
 
 In your workflows, you can use different strategies to name your key depending on your use case so that the cache is scoped appropriately for your need. For example, you can have cache specific to OS, or based on the lockfile or commit SHA or even workflow run.
@@ -24,12 +28,16 @@ In your workflows, you can use different strategies to name your key depending o
 One of the most common use case is to use hash for lockfile as key. This way, same cache will be restored for a lockfile until there's a change in dependencies listed in lockfile.
 
 ```yaml
-  - uses: actions/cache@v3
+  - uses: justvanilla/shared-gha-cache-s3@v3
     with:
       path: |
         path/to/dependencies
         some/other/dependencies
       key: cache-${{ hashFiles('**/lockfiles') }}
+      aws-region: ${{ secrets.CACHE_AWS_REGION }}
+      aws-bucket: ${{ secrets.CACHE_AWS_BUCKET }}
+      aws-access-key-id: ${{ secrets.CACHE_AWS_ACCESS_KEY_ID }}
+      aws-secret-access-key: ${{ secrets.CACHE_AWS_SECRET_ACCESS_KEY }}
 ```
 
 ### Using restore keys to download the closest matching cache
@@ -37,7 +45,7 @@ One of the most common use case is to use hash for lockfile as key. This way, sa
 If cache is not found matching the primary key, restore keys can be used to download the closest matching cache that was recently created. This ensures that the build/install step will need to additionally fetch just a handful of newer dependencies, and hence saving build time.
 
 ```yaml
-  - uses: actions/cache@v3
+  - uses: justvanilla/shared-gha-cache-s3@v3
     with:
       path: |
         path/to/dependencies
@@ -45,6 +53,10 @@ If cache is not found matching the primary key, restore keys can be used to down
       key: cache-npm-${{ hashFiles('**/lockfiles') }}
       restore-keys: |
         cache-npm-
+      aws-region: ${{ secrets.CACHE_AWS_REGION }}
+      aws-bucket: ${{ secrets.CACHE_AWS_BUCKET }}
+      aws-access-key-id: ${{ secrets.CACHE_AWS_ACCESS_KEY_ID }}
+      aws-secret-access-key: ${{ secrets.CACHE_AWS_SECRET_ACCESS_KEY }}
 ```
 
 The restore keys can be provided as a complete name, or a prefix, read more [here](https://docs.github.com/en/actions/using-workflows/caching-dependencies-to-speed-up-workflows#matching-a-cache-key) on how a cache key is matched using restore keys.
@@ -54,12 +66,16 @@ The restore keys can be provided as a complete name, or a prefix, read more [her
 In case of workflows with matrix running for multiple Operating Systems, the caches can be stored separately for each of them. This can be used in combination with hashfiles in case multiple caches are being generated per OS.
 
 ```yaml
-  - uses: actions/cache@v3
+  - uses: justvanilla/shared-gha-cache-s3@v3
     with:
       path: |
         path/to/dependencies
         some/other/dependencies
       key: ${{ runner.os }}-cache
+      aws-region: ${{ secrets.CACHE_AWS_REGION }}
+      aws-bucket: ${{ secrets.CACHE_AWS_BUCKET }}
+      aws-access-key-id: ${{ secrets.CACHE_AWS_ACCESS_KEY_ID }}
+      aws-secret-access-key: ${{ secrets.CACHE_AWS_SECRET_ACCESS_KEY }}
 ```
 
 ### Creating a short lived cache
@@ -73,12 +89,16 @@ Caches scoped to the particular workflow run id or run attempt can be stored and
 On similar lines, commit sha can be used to create a very specialized and short lived cache.
 
 ```yaml
-  - uses: actions/cache@v3
+  - uses: justvanilla/shared-gha-cache-s3@v3
     with:
       path: |
         path/to/dependencies
         some/other/dependencies
       key: cache-${{ github.sha }}
+      aws-region: ${{ secrets.CACHE_AWS_REGION }}
+      aws-bucket: ${{ secrets.CACHE_AWS_BUCKET }}
+      aws-access-key-id: ${{ secrets.CACHE_AWS_ACCESS_KEY_ID }}
+      aws-secret-access-key: ${{ secrets.CACHE_AWS_SECRET_ACCESS_KEY }}
 ```
 
 ### Using multiple factors while forming a key depening on the need
@@ -86,12 +106,16 @@ On similar lines, commit sha can be used to create a very specialized and short 
 Cache key can be formed by combination of more than one metadata, evaluated info.
 
 ```yaml
-  - uses: actions/cache@v3
+  - uses: justvanilla/shared-gha-cache-s3@v3
     with:
       path: |
         path/to/dependencies
         some/other/dependencies
       key: ${{ runner.os }}-${{ hashFiles('**/lockfiles') }}
+      aws-region: ${{ secrets.CACHE_AWS_REGION }}
+      aws-bucket: ${{ secrets.CACHE_AWS_BUCKET }}
+      aws-access-key-id: ${{ secrets.CACHE_AWS_ACCESS_KEY_ID }}
+      aws-secret-access-key: ${{ secrets.CACHE_AWS_SECRET_ACCESS_KEY }}
 ```
 
 The [GitHub Context](https://docs.github.com/en/actions/learn-github-actions/contexts#github-context) can be used to create keys using the workflows metadata.
@@ -148,7 +172,7 @@ In case you are using a centralized job to create and save your cache that can b
 steps:
   - uses: actions/checkout@v3
 
-  - uses: actions/cache/restore@v3
+  - uses: justvanilla/shared-gha-cache-s3/restore@v3
     id: cache
     with:
       path: path/to/dependencies
@@ -173,7 +197,7 @@ You can use the output of this action to exit the workflow on cache miss. This w
 steps:
   - uses: actions/checkout@v3
 
-  - uses: actions/cache/restore@v3
+  - uses: justvanilla/shared-gha-cache-s3/restore@v3
     id: cache
     with:
       path: path/to/dependencies
@@ -194,22 +218,30 @@ steps:
 If you want to avoid re-computing the cache key again in `save` action, the outputs from `restore` action can be used as input to the `save` action.
 
 ```yaml
-  - uses: actions/cache/restore@v3
+  - uses: justvanilla/shared-gha-cache-s3/restore@v3
     id: restore-cache
     with:
       path: |
         path/to/dependencies
         some/other/dependencies
       key: ${{ runner.os }}-${{ hashFiles('**/lockfiles') }}
+      aws-region: ${{ secrets.CACHE_AWS_REGION }}
+      aws-bucket: ${{ secrets.CACHE_AWS_BUCKET }}
+      aws-access-key-id: ${{ secrets.CACHE_AWS_ACCESS_KEY_ID }}
+      aws-secret-access-key: ${{ secrets.CACHE_AWS_SECRET_ACCESS_KEY }}
   .
   .
   .
-  - uses: actions/cache/save@v3
+  - uses: justvanilla/shared-gha-cache-s3/save@v3
     with:
       path: |
         path/to/dependencies
         some/other/dependencies
       key: ${{ steps.restore-cache.outputs.cache-primary-key }}
+      aws-region: ${{ secrets.CACHE_AWS_REGION }}
+      aws-bucket: ${{ secrets.CACHE_AWS_BUCKET }}
+      aws-access-key-id: ${{ secrets.CACHE_AWS_ACCESS_KEY_ID }}
+      aws-secret-access-key: ${{ secrets.CACHE_AWS_SECRET_ACCESS_KEY }}
 ```
 
 ### Re-evaluate cache key while saving cache
@@ -219,33 +251,45 @@ On the other hand, the key can also be explicitly re-computed while executing th
 Let's say we have a restore step that computes key at runtime
 
 ```yaml
-uses: actions/cache/restore@v3
+uses: justvanilla/shared-gha-cache-s3/restore@v3
 id: restore-cache
 with:
     key: cache-${{ hashFiles('**/lockfiles') }}
+    aws-region: ${{ secrets.CACHE_AWS_REGION }}
+    aws-bucket: ${{ secrets.CACHE_AWS_BUCKET }}
+    aws-access-key-id: ${{ secrets.CACHE_AWS_ACCESS_KEY_ID }}
+    aws-secret-access-key: ${{ secrets.CACHE_AWS_SECRET_ACCESS_KEY }}
 ```
 
 Case 1: Where an user would want to reuse the key as it is
 
 ```yaml
-uses: actions/cache/save@v3
+uses: justvanilla/shared-gha-cache-s3/save@v3
 with:
     key: ${{ steps.restore-cache.outputs.cache-primary-key }}
+    aws-region: ${{ secrets.CACHE_AWS_REGION }}
+    aws-bucket: ${{ secrets.CACHE_AWS_BUCKET }}
+    aws-access-key-id: ${{ secrets.CACHE_AWS_ACCESS_KEY_ID }}
+    aws-secret-access-key: ${{ secrets.CACHE_AWS_SECRET_ACCESS_KEY }}
 ```
 
 Case 2: Where the user would want to re-evaluate the key
 
 ```yaml
-uses: actions/cache/save@v3
+uses: justvanilla/shared-gha-cache-s3/save@v3
 with:
     key: npm-cache-${{hashfiles(package-lock.json)}}
+    aws-region: ${{ secrets.CACHE_AWS_REGION }}
+    aws-bucket: ${{ secrets.CACHE_AWS_BUCKET }}
+    aws-access-key-id: ${{ secrets.CACHE_AWS_ACCESS_KEY_ID }}
+    aws-secret-access-key: ${{ secrets.CACHE_AWS_SECRET_ACCESS_KEY }}
 ```
 
 ### Saving cache even if the build fails
 
-There can be cases where a cache should be saved even if the build job fails. For example, a job can fail due to flaky tests but the caches can still be re-used. You can use `actions/cache/save` action to save the cache by using `if: always()` condition.
+There can be cases where a cache should be saved even if the build job fails. For example, a job can fail due to flaky tests but the caches can still be re-used. You can use `justvanilla/shared-gha-cache-s3/save` action to save the cache by using `if: always()` condition.
 
-Similarly, `actions/cache/save` action can be conditionally used based on the output of the previous steps. This way you get more control on when to save the cache.
+Similarly, `justvanilla/shared-gha-cache-s3/save` action can be conditionally used based on the output of the previous steps. This way you get more control on when to save the cache.
 
 ```yaml
 steps:
@@ -255,16 +299,20 @@ steps:
   .
   - name: Build
     run: /build.sh
-  - uses: actions/cache/save@v3
+  - uses: justvanilla/shared-gha-cache-s3/save@v3
     if: always() // or any other condition to invoke the save action
     with:
       path: path/to/dependencies
       key: ${{ runner.os }}-${{ hashFiles('**/lockfiles') }}
+      aws-region: ${{ secrets.CACHE_AWS_REGION }}
+      aws-bucket: ${{ secrets.CACHE_AWS_BUCKET }}
+      aws-access-key-id: ${{ secrets.CACHE_AWS_ACCESS_KEY_ID }}
+      aws-secret-access-key: ${{ secrets.CACHE_AWS_SECRET_ACCESS_KEY }}
 ```
 
 ### Saving cache once and reusing in multiple workflows
 
-In case of multi-module projects, where the built artifact of one project needs to be reused in subsequent child modules, the need of rebuilding the parent module again and again with every build can be eliminated. The `actions/cache` or `actions/cache/save` action can be used to build and save the parent module artifact once, and restored multiple times while building the child modules.
+In case of multi-module projects, where the built artifact of one project needs to be reused in subsequent child modules, the need of rebuilding the parent module again and again with every build can be eliminated. The `justvanilla/shared-gha-cache-s3` or `justvanilla/shared-gha-cache-s3/save` action can be used to build and save the parent module artifact once, and restored multiple times while building the child modules.
 
 #### Step 1 - Build the parent module and save it
 
@@ -275,11 +323,15 @@ steps:
   - name: Build
     run: ./build-parent-module.sh
 
-  - uses: actions/cache/save@v3
+  - uses: justvanilla/shared-gha-cache-s3/save@v3
     id: cache
     with:
       path: path/to/dependencies
       key: ${{ runner.os }}-${{ hashFiles('**/lockfiles') }}
+      aws-region: ${{ secrets.CACHE_AWS_REGION }}
+      aws-bucket: ${{ secrets.CACHE_AWS_BUCKET }}
+      aws-access-key-id: ${{ secrets.CACHE_AWS_ACCESS_KEY_ID }}
+      aws-secret-access-key: ${{ secrets.CACHE_AWS_SECRET_ACCESS_KEY }}
 ```
 
 #### Step 2 - Restore the built artifact from cache using the same key and path
@@ -288,11 +340,15 @@ steps:
 steps:
   - uses: actions/checkout@v3
 
-  - uses: actions/cache/restore@v3
+  - uses: justvanilla/shared-gha-cache-s3/restore@v3
     id: cache
     with:
       path: path/to/dependencies
       key: ${{ runner.os }}-${{ hashFiles('**/lockfiles') }}
+      aws-region: ${{ secrets.CACHE_AWS_REGION }}
+      aws-bucket: ${{ secrets.CACHE_AWS_BUCKET }}
+      aws-access-key-id: ${{ secrets.CACHE_AWS_ACCESS_KEY_ID }}
+      aws-secret-access-key: ${{ secrets.CACHE_AWS_SECRET_ACCESS_KEY }}
 
   - name: Install Dependencies
     if: steps.cache.outputs.cache-hit != 'true'

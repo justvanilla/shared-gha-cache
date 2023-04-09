@@ -12,12 +12,16 @@ A cache today is immutable and cannot be updated. But some use cases require the
 
   ```yaml
       - name: update cache on every commit
-        uses: actions/cache@v3
+        uses: justvanilla/shared-gha-cache-s3@v3
         with:
           path: prime-numbers
           key: primes-${{ runner.os }}-${{ github.run_id }} # Can use time based key as well
           restore-keys: |
             primes-${{ runner.os }}
+          aws-region: ${{ secrets.CACHE_AWS_REGION }}
+          aws-bucket: ${{ secrets.CACHE_AWS_BUCKET }}
+          aws-access-key-id: ${{ secrets.CACHE_AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.CACHE_AWS_SECRET_ACCESS_KEY }}
   ```
 
   Please note that this will create a new cache on every run and hence will consume the cache [quota](./README.md#cache-limits).

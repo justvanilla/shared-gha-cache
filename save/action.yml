@@ -1,6 +1,6 @@
 name: 'Save a cache (AWS S3)'
 description: 'Save Cache artifacts in S3 like dependencies and build outputs to improve workflow execution time'
-author: 'GitHub'
+author: 'Github, Justvanilla'
 inputs:
   path:
     description: 'A list of files, directories, and wildcard patterns to cache'

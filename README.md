@@ -2,7 +2,7 @@
 
 <img src="https://www.justvanilla.com/wp-content/uploads/2023/04/Vanilla-Logo.svg" height="50" align="left"></img>
 
-> This repo is a drop-in replacement for standard cache action to make it use AWS S3. You can replace cache calls with `uses: justvanilla/shared-gha-cache@s3` directly. Default behavior will be identical. To make task use S3 bucket instead, provide the following inputs:
+> This repo is a drop-in replacement for standard cache action to make it use AWS S3. You can replace cache calls with `uses: justvanilla/shared-gha-cache-s3@v3` directly. Default behavior will be identical. To make task use S3 bucket instead, provide the following inputs:
 > * **aws-region**: us-east-1
 > * **aws-bucket**: the-bucketest-bucket
 > * **aws-access-key-id**: key id for account having RW access to the bucket
@@ -109,7 +109,7 @@ jobs:
 
     - name: Cache Primes
       id: cache-primes
-      uses: justvanilla/shared-gha-cache@s3
+      uses: justvanilla/shared-gha-cache-s3@v3
       with:
         path: prime-numbers
         key: ${{ runner.os }}-primes
@@ -205,7 +205,7 @@ A cache key can include any of the contexts, functions, literals, and operators 
 For example, using the [`hashFiles`](https://docs.github.com/en/actions/learn-github-actions/expressions#hashfiles) function allows you to create a new cache when dependencies change.
 
 ```yaml
-  - uses: justvanilla/shared-gha-cache@s3
+  - uses: justvanilla/shared-gha-cache-s3@v3
     with:
       path: |
         path/to/dependencies
@@ -227,7 +227,7 @@ Additionally, you can use arbitrary command output in a cache key, such as a dat
       echo "date=$(/bin/date -u "+%Y%m%d")" >> $GITHUB_OUTPUT
     shell: bash
 
-  - uses: justvanilla/shared-gha-cache@s3
+  - uses: justvanilla/shared-gha-cache-s3@v3
     with:
       path: path/to/dependencies
       key: ${{ runner.os }}-${{ steps.get-date.outputs.date }}-${{ hashFiles('**/lockfiles') }}
@@ -253,11 +253,15 @@ Example:
 steps:
   - uses: actions/checkout@v3
 
-  - uses: justvanilla/shared-gha-cache@s3
+  - uses: justvanilla/shared-gha-cache-s3@v3
     id: cache
     with:
       path: path/to/dependencies
       key: ${{ runner.os }}-${{ hashFiles('**/lockfiles') }}
+      aws-region: ${{ secrets.CACHE_AWS_REGION }}
+      aws-bucket: ${{ secrets.CACHE_AWS_BUCKET }}
+      aws-access-key-id: ${{ secrets.CACHE_AWS_ACCESS_KEY_ID }}
+      aws-secret-access-key: ${{ secrets.CACHE_AWS_SECRET_ACCESS_KEY }}
 
   - name: Install Dependencies
     if: steps.cache.outputs.cache-hit != 'true'
@@ -285,10 +289,14 @@ jobs:
 
       - name: Cache Primes
         id: cache-primes
-        uses: justvanilla/shared-gha-cache@s3
+        uses: justvanilla/shared-gha-cache-s3@v3
         with:
           path: prime-numbers
           key: primes
+          aws-region: ${{ secrets.CACHE_AWS_REGION }}
+          aws-bucket: ${{ secrets.CACHE_AWS_BUCKET }}
+          aws-access-key-id: ${{ secrets.CACHE_AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.CACHE_AWS_SECRET_ACCESS_KEY }}
 
       - name: Generate Prime Numbers
         if: steps.cache-primes.outputs.cache-hit != 'true'
@@ -296,10 +304,14 @@ jobs:
 
       - name: Cache Numbers
         id: cache-numbers
-        uses: justvanilla/shared-gha-cache@s3
+        uses: justvanilla/shared-gha-cache-s3@v3
         with:
           path: numbers
           key: primes
+          aws-region: ${{ secrets.CACHE_AWS_REGION }}
+          aws-bucket: ${{ secrets.CACHE_AWS_BUCKET }}
+          aws-access-key-id: ${{ secrets.CACHE_AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.CACHE_AWS_SECRET_ACCESS_KEY }}
 
       - name: Generate Numbers
         if: steps.cache-numbers.outputs.cache-hit != 'true'
@@ -312,10 +324,14 @@ jobs:
 
       - name: Cache Primes
         id: cache-primes
-        uses: justvanilla/shared-gha-cache@s3
+        uses: justvanilla/shared-gha-cache-s3@v3
         with:
           path: prime-numbers
           key: primes
+          aws-region: ${{ secrets.CACHE_AWS_REGION }}
+          aws-bucket: ${{ secrets.CACHE_AWS_BUCKET }}
+          aws-access-key-id: ${{ secrets.CACHE_AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.CACHE_AWS_SECRET_ACCESS_KEY }}
 
       - name: Generate Prime Numbers
         if: steps.cache-primes.outputs.cache-hit != 'true'
