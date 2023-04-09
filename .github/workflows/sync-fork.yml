@@ -12,5 +12,6 @@ jobs:
       - uses: tgymnich/fork-sync@v1.8
         with:
           owner: actions
+          name: cache
           base: main
           head: main
