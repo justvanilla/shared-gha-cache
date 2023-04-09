@@ -68358,11 +68358,11 @@ Object.defineProperty(exports, "__esModule", ({ value: true }));
 exports.assertDefined = exports.unlinkFile = exports.getCompressionMethod = exports.isGnuTarInstalled = exports.isZstdInstalled = exports.resolvePaths = exports.createTempDirectory = exports.getCacheFileName = exports.getArchiveFileSizeInBytes = exports.SocketTimeout = exports.DefaultRetryDelay = exports.DefaultRetryAttempts = exports.CompressionMethod = exports.CacheFilename = void 0;
 const core = __importStar(__nccwpck_require__(42186));
 const exec = __importStar(__nccwpck_require__(71514));
-const io = __importStar(__nccwpck_require__(47351));
 const glob = __importStar(__nccwpck_require__(28090));
-const semver = __importStar(__nccwpck_require__(11383));
-const path = __importStar(__nccwpck_require__(71017));
+const io = __importStar(__nccwpck_require__(47351));
 const fs = __importStar(__nccwpck_require__(57147));
+const path = __importStar(__nccwpck_require__(71017));
+const semver = __importStar(__nccwpck_require__(11383));
 const uuid_1 = __nccwpck_require__(75840);
 var CacheFilename;
 (function (CacheFilename) {
@@ -68628,7 +68628,7 @@ function getCacheEntryS3(s3Options, s3BucketName, keys, paths) {
     return __awaiter(this, void 0, void 0, function* () {
         const primaryKey = keys[0];
         const s3client = new client_s3_1.S3Client(s3Options);
-        let contents = new Array();
+        const contents = [];
         let s3ContinuationToken = null;
         let count = 0;
         const param = {
@@ -68647,7 +68647,8 @@ function getCacheEntryS3(s3Options, s3BucketName, keys, paths) {
                 throw new Error(`Error from S3: ${e}`);
             }
             if (!response.Contents) {
-                throw new Error(`Cannot found object in bucket ${s3BucketName}`);
+                return null;
+                // throw new Error(`Cannot found object in bucket ${s3BucketName}`);
             }
             core.debug(`Found objects ${response.Contents.length}`);
             const found = response.Contents.find((content) => content.Key === primaryKey);
@@ -68693,7 +68694,7 @@ function searchRestoreKeyEntry(notPrimaryKey, entries) {
 }
 function _searchRestoreKeyEntry(notPrimaryKey, entries) {
     var _a;
-    let matchPrefix = new Array();
+    const matchPrefix = [];
     for (const entry of entries) {
         if (entry.Key === notPrimaryKey) {
             // extractly match, Use this entry
@@ -69080,10 +69081,10 @@ function getUploadOptions(copy) {
         uploadChunkSize: 32 * 1024 * 1024
     };
     if (copy) {
-        if (typeof copy.uploadConcurrency === 'number') {
+        if (typeof copy.uploadConcurrency === "number") {
             result.uploadConcurrency = copy.uploadConcurrency;
         }
-        if (typeof copy.uploadChunkSize === 'number') {
+        if (typeof copy.uploadChunkSize === "number") {
             result.uploadChunkSize = copy.uploadChunkSize;
         }
     }
@@ -69104,13 +69105,13 @@ function getDownloadOptions(copy) {
         timeoutInMs: 30000
     };
     if (copy) {
-        if (typeof copy.useAzureSdk === 'boolean') {
+        if (typeof copy.useAzureSdk === "boolean") {
             result.useAzureSdk = copy.useAzureSdk;
         }
-        if (typeof copy.downloadConcurrency === 'number') {
+        if (typeof copy.downloadConcurrency === "number") {
             result.downloadConcurrency = copy.downloadConcurrency;
         }
-        if (typeof copy.timeoutInMs === 'number') {
+        if (typeof copy.timeoutInMs === "number") {
             result.timeoutInMs = copy.timeoutInMs;
         }
     }

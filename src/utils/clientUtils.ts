@@ -5,14 +5,13 @@ import {
     RequestOptions,
     TypedResponse
 } from "@actions/http-client/lib/interfaces";
-import { DownloadOptions, UploadOptions } from "./contracts";
 import {
+    _Object,
     ListObjectsV2Command,
     ListObjectsV2CommandInput,
     ListObjectsV2CommandOutput,
     S3Client,
-    S3ClientConfig,
-    _Object
+    S3ClientConfig
 } from "@aws-sdk/client-s3";
 import { Progress, Upload } from "@aws-sdk/lib-storage";
 import * as crypto from "crypto";
@@ -23,20 +22,19 @@ import * as utils from "./cacheUtils";
 import { CompressionMethod } from "./cacheUtils";
 import {
     ArtifactCacheEntry,
-    InternalCacheOptions,
     CommitCacheRequest,
+    DownloadOptions,
+    InternalCacheOptions,
+    ITypedResponseWithError,
     ReserveCacheRequest,
     ReserveCacheResponse,
-    ITypedResponseWithError
+    UploadOptions
 } from "./contracts";
 import {
     downloadCacheHttpClient,
     downloadCacheStorageS3
 } from "./downloadUtils";
-import {
-    getDownloadOptions,
-    getUploadOptions
-} from "./options";
+import { getDownloadOptions, getUploadOptions } from "./options";
 import {
     isSuccessStatusCode,
     retryHttpClientResponse,
@@ -117,7 +115,7 @@ async function getCacheEntryS3(
 
     const s3client = new S3Client(s3Options);
 
-    let contents: _content[] = new Array();
+    const contents: _content[] = [];
     let s3ContinuationToken: string | undefined | null = null;
     let count = 0;
 
@@ -138,7 +136,8 @@ async function getCacheEntryS3(
             throw new Error(`Error from S3: ${e}`);
         }
         if (!response.Contents) {
-            throw new Error(`Cannot found object in bucket ${s3BucketName}`);
+            return null;
+            // throw new Error(`Cannot found object in bucket ${s3BucketName}`);
         }
         core.debug(`Found objects ${response.Contents.length}`);
 
@@ -200,7 +199,7 @@ function _searchRestoreKeyEntry(
     notPrimaryKey: string,
     entries: _content[]
 ): _content | null {
-    let matchPrefix: _content[] = new Array();
+    const matchPrefix: _content[] = [];
 
     for (const entry of entries) {
         if (entry.Key === notPrimaryKey) {

@@ -1,14 +1,12 @@
 import * as core from "@actions/core";
 import { HttpClient, HttpClientResponse } from "@actions/http-client";
 import { GetObjectCommand, S3Client, S3ClientConfig } from "@aws-sdk/client-s3";
-import * as buffer from "buffer";
 import * as fs from "fs";
 import * as stream from "stream";
 import * as util from "util";
 
 import * as utils from "./cacheUtils";
 import { SocketTimeout } from "./cacheUtils";
-import { DownloadOptions, UploadOptions } from "./contracts";
 import { retryHttpClientResponse } from "./requestUtils";
 
 /**

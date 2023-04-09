@@ -1,10 +1,11 @@
 import * as core from "@actions/core";
 import {
-    HttpCodes,
     HttpClientError,
-    HttpClientResponse
+    HttpClientResponse,
+    HttpCodes
 } from "@actions/http-client";
-import { DefaultRetryDelay, DefaultRetryAttempts } from "./cacheUtils";
+
+import { DefaultRetryAttempts, DefaultRetryDelay } from "./cacheUtils";
 import { ITypedResponseWithError } from "./contracts";
 
 export function isSuccessStatusCode(statusCode?: number): boolean {

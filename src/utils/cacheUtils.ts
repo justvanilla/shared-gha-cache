@@ -1,10 +1,10 @@
 import * as core from "@actions/core";
 import * as exec from "@actions/exec";
-import * as io from "@actions/io";
 import * as glob from "@actions/glob";
-import * as semver from "semver";
-import * as path from "path";
+import * as io from "@actions/io";
 import * as fs from "fs";
+import * as path from "path";
+import * as semver from "semver";
 import { v4 as uuidV4 } from "uuid";
 
 export enum CacheFilename {
