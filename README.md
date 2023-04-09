@@ -6,7 +6,7 @@
 > * **aws-region**: us-east-1
 > * **aws-bucket**: the-bucketest-bucket
 > * **aws-access-key-id**: key id for account having RW access to the bucket
-> * **aws-secret-access-key**: secrey for account having RW access to the bucket
+> * **aws-secret-access-key**: secret for account having RW access to the bucket
 
 > **Note**
 > Action is supported and periodically rebased against original 👍
@@ -17,11 +17,9 @@ Lots of the backend is based on https://github.com/whywaita/actions-cache-s3 ❤
 
 This action allows caching dependencies and build outputs to improve workflow execution time.
 
-Two other actions are available in addition to the primary `cache` action:
-
-* [Restore action](./restore/README.md)
-
-* [Save action](./save/README.md)
+>Two other actions are available in addition to the primary `cache` action:
+>* [Restore action](./restore/README.md)
+>* [Save action](./save/README.md)
 
 [![Tests](https://github.com/actions/cache/actions/workflows/workflow.yml/badge.svg)](https://github.com/actions/cache/actions/workflows/workflow.yml)
 
@@ -42,7 +40,7 @@ See ["Caching dependencies to speed up workflows"](https://docs.github.com/en/ac
 * Fixed cache not working with github workspace directory or current directory.
 * Fixed the download stuck problem by introducing a timeout of 1 hour for cache downloads.
 * Fix zstd not working for windows on gnu tar in issues.
-* Allowing users to provide a custom timeout as input for aborting download of a cache segment using an environment variable `SEGMENT_DOWNLOAD_TIMEOUT_MINS`. Default is 60 minutes.
+* Allowing users to provide a custom timeout as input for aborting download of a cache segment using an environment variable `SEGMENT_DOWNLOAD_TIMEOUT_MINS`. Default is 10 minutes.
 * New actions are available for granular control over caches - [restore](restore/action.yml) and [save](save/action.yml).
 * Support cross-os caching as an opt-in feature. See [Cross OS caching](./tips-and-workarounds.md#cross-os-cache) for more info.
 * Added option to fail job on cache miss. See [Exit workflow on cache miss](./restore/README.md#exit-workflow-on-cache-miss) for more info.
@@ -77,7 +75,7 @@ If you are using a `self-hosted` Windows runner, `GNU tar` and `zstd` are requir
 
 #### Environment Variables
 
-* `SEGMENT_DOWNLOAD_TIMEOUT_MINS` - Segment download timeout (in minutes, default `60`) to abort download of the segment if not completed in the defined number of minutes. [Read more](https://github.com/actions/cache/blob/main/tips-and-workarounds.md#cache-segment-restore-timeout)
+* `SEGMENT_DOWNLOAD_TIMEOUT_MINS` - Segment download timeout (in minutes, default `10`) to abort download of the segment if not completed in the defined number of minutes. [Read more](https://github.com/actions/cache/blob/main/tips-and-workarounds.md#cache-segment-restore-timeout)
 
 ### Outputs
 
