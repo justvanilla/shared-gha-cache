@@ -57,6 +57,10 @@ jobs:
         path: |
           test-cache
           ~/test-cache
+        aws-region: ${{ secrets.TEST_AWS_REGION }}
+        aws-bucket: ${{ secrets.TEST_AWS_BUCKET }}
+        aws-access-key-id: ${{ secrets.TEST_AWS_ACCESS_KEY_ID }}
+        aws-secret-access-key: ${{ secrets.TEST_AWS_SECRET_ACCESS_KEY }}
   test-restore:
     needs: test-save
     strategy:
@@ -74,6 +78,10 @@ jobs:
         path: |
           test-cache
           ~/test-cache
+        aws-region: ${{ secrets.TEST_AWS_REGION }}
+        aws-bucket: ${{ secrets.TEST_AWS_BUCKET }}
+        aws-access-key-id: ${{ secrets.TEST_AWS_ACCESS_KEY_ID }}
+        aws-secret-access-key: ${{ secrets.TEST_AWS_SECRET_ACCESS_KEY }}
     - name: Verify cache files in working directory
       shell: bash
       run: __tests__/verify-cache-files.sh ${{ runner.os }} test-cache
@@ -104,6 +112,10 @@ jobs:
       with:
         key: test-proxy-${{ github.run_id }}
         path: test-cache
+        aws-region: ${{ secrets.TEST_AWS_REGION }}
+        aws-bucket: ${{ secrets.TEST_AWS_BUCKET }}
+        aws-access-key-id: ${{ secrets.TEST_AWS_ACCESS_KEY_ID }}
+        aws-secret-access-key: ${{ secrets.TEST_AWS_SECRET_ACCESS_KEY }}
   test-proxy-restore:
     needs: test-proxy-save
     runs-on: ubuntu-latest
@@ -125,5 +137,9 @@ jobs:
       with:
         key: test-proxy-${{ github.run_id }}
         path: test-cache
+        aws-region: ${{ secrets.TEST_AWS_REGION }}
+        aws-bucket: ${{ secrets.TEST_AWS_BUCKET }}
+        aws-access-key-id: ${{ secrets.TEST_AWS_ACCESS_KEY_ID }}
+        aws-secret-access-key: ${{ secrets.TEST_AWS_SECRET_ACCESS_KEY }}
     - name: Verify cache
       run: __tests__/verify-cache-files.sh proxy test-cache
