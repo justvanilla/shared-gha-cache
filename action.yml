@@ -26,6 +26,18 @@ inputs:
     description: 'Check if a cache entry exists for the given input(s) (key, restore-keys) without downloading the cache'
     default: 'false'
     required: false
+  aws-bucket:
+    description: 'An AWS S3 bucket to save cache'
+    required: true
+  aws-access-key-id:
+    description: 'An AWS access key id to access the bucket'
+    required: true
+  aws-secret-access-key:
+    description: 'An AWS secret access key to access the bucket'
+    required: true
+  aws-region:
+    description: 'An AWS region where the bucket is located'
+    required: true
 outputs:
   cache-hit:
     description: 'A boolean value to indicate an exact match was found for the primary key'

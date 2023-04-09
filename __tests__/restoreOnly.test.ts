@@ -1,6 +1,6 @@
-import * as cache from "@actions/cache";
 import * as core from "@actions/core";
 
+import * as cache from "../src/backend";
 import { Events, RefKey } from "../src/constants";
 import run from "../src/restoreOnly";
 import * as actionUtils from "../src/utils/actionUtils";
@@ -82,7 +82,8 @@ test("restore with no cache found", async () => {
         {
             lookupOnly: false
         },
-        false
+        { credentials: { accessKeyId: "", secretAccessKey: "" }, region: "" },
+        ""
     );
 
     expect(outputMock).toHaveBeenCalledWith("cache-primary-key", key);
@@ -124,7 +125,8 @@ test("restore with restore keys and no cache found", async () => {
         {
             lookupOnly: false
         },
-        false
+        { credentials: { accessKeyId: "", secretAccessKey: "" }, region: "" },
+        ""
     );
 
     expect(outputMock).toHaveBeenCalledWith("cache-primary-key", key);
@@ -163,7 +165,8 @@ test("restore with cache found for key", async () => {
         {
             lookupOnly: false
         },
-        false
+        { credentials: { accessKeyId: "", secretAccessKey: "" }, region: "" },
+        ""
     );
 
     expect(outputMock).toHaveBeenCalledWith("cache-primary-key", key);
@@ -206,7 +209,8 @@ test("restore with cache found for restore key", async () => {
         {
             lookupOnly: false
         },
-        false
+        { credentials: { accessKeyId: "", secretAccessKey: "" }, region: "" },
+        ""
     );
 
     expect(outputMock).toHaveBeenCalledWith("cache-primary-key", key);

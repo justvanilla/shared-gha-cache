@@ -1,6 +1,6 @@
-import * as cache from "@actions/cache";
 import * as core from "@actions/core";
 
+import * as cache from "../src/backend";
 import { Events, Inputs, RefKey } from "../src/constants";
 import run from "../src/saveImpl";
 import { StateProvider } from "../src/stateProvider";
@@ -8,7 +8,7 @@ import * as actionUtils from "../src/utils/actionUtils";
 import * as testUtils from "../src/utils/testUtils";
 
 jest.mock("@actions/core");
-jest.mock("@actions/cache");
+jest.mock("../src/backend");
 jest.mock("../src/utils/actionUtils");
 
 beforeAll(() => {
@@ -170,7 +170,8 @@ test("save on GHES with AC available", async () => {
         {
             uploadChunkSize: 4000000
         },
-        false
+        { credentials: { accessKeyId: "", secretAccessKey: "" }, region: "" },
+        ""
     );
 
     expect(failedMock).toHaveBeenCalledTimes(0);
@@ -266,7 +267,8 @@ test("save with large cache outputs warning", async () => {
         [inputPath],
         primaryKey,
         expect.anything(),
-        false
+        { credentials: { accessKeyId: "", secretAccessKey: "" }, region: "" },
+        ""
     );
 
     expect(logWarningMock).toHaveBeenCalledTimes(1);
@@ -299,7 +301,7 @@ test("save with reserve cache failure outputs warning", async () => {
     const saveCacheMock = jest
         .spyOn(cache, "saveCache")
         .mockImplementationOnce(() => {
-            const actualCache = jest.requireActual("@actions/cache");
+            const actualCache = jest.requireActual("../src/backend");
             const error = new actualCache.ReserveCacheError(
                 `Unable to reserve cache with key ${primaryKey}, another job may be creating this cache.`
             );
@@ -313,7 +315,8 @@ test("save with reserve cache failure outputs warning", async () => {
         [inputPath],
         primaryKey,
         expect.anything(),
-        false
+        { credentials: { accessKeyId: "", secretAccessKey: "" }, region: "" },
+        ""
     );
 
     expect(logWarningMock).toHaveBeenCalledWith(
@@ -356,7 +359,8 @@ test("save with server error outputs warning", async () => {
         [inputPath],
         primaryKey,
         expect.anything(),
-        false
+        { credentials: { accessKeyId: "", secretAccessKey: "" }, region: "" },
+        ""
     );
 
     expect(logWarningMock).toHaveBeenCalledTimes(1);
@@ -401,7 +405,8 @@ test("save with valid inputs uploads a cache", async () => {
         {
             uploadChunkSize: 4000000
         },
-        false
+        { credentials: { accessKeyId: "", secretAccessKey: "" }, region: "" },
+        ""
     );
 
     expect(failedMock).toHaveBeenCalledTimes(0);

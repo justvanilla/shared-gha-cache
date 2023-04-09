@@ -15,6 +15,18 @@ inputs:
     description: 'An optional boolean when enabled, allows windows runners to save caches that can be restored on other platforms'
     default: 'false'
     required: false
+  aws-bucket:
+    description: 'An AWS S3 bucket to save cache'
+    required: true
+  aws-access-key-id:
+    description: 'An AWS access key id to access the bucket'
+    required: true
+  aws-secret-access-key:
+    description: 'An AWS secret access key to access the bucket'
+    required: true
+  aws-region:
+    description: 'An AWS region where the bucket is located'
+    required: true
 runs:
   using: 'node16'
   main: '../dist/save-only/index.js'
