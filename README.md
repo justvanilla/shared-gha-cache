@@ -6,7 +6,7 @@
 > * **aws-region**: us-east-1
 > * **aws-bucket**: the-bucketest-bucket
 > * **aws-access-key-id**: key id for account having RW access to the bucket
-> * **aws-secret-access-key**: secret for account having RW access to the bucket
+> * **aws-secret-access-key**: secrey for account having RW access to the bucket
 
 > **Note**
 > Action is supported and periodically rebased against original 👍
