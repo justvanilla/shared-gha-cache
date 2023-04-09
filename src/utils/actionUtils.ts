@@ -1,6 +1,6 @@
 import * as core from "@actions/core";
+import * as cache from "github-actions.cache-s3";
 
-import * as cache from "../backend";
 import { RefKey } from "../constants";
 
 export function isGhes(): boolean {

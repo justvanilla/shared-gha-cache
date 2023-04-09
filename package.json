@@ -1,6 +1,6 @@
 {
   "name": "cache",
-  "version": "3.3.1",
+  "version": "3.3.3",
   "private": true,
   "description": "Cache dependencies and build outputs",
   "main": "dist/restore/index.js",
@@ -9,11 +9,12 @@
     "test": "tsc --noEmit && jest --coverage",
     "lint": "eslint **/*.ts --cache --fix",
     "format": "prettier --write **/*.ts",
-    "format-check": "prettier --check **/*.ts"
+    "format-check": "prettier --check **/*.ts",
+    "bump:patch": "npm version patch"
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/actions/cache.git"
+    "url": "git+https://github.com/justvanilla/shared-gha-cache-s3.git"
   },
   "keywords": [
     "actions",
@@ -23,6 +24,7 @@
   "author": "GitHub",
   "license": "MIT",
   "dependencies": {
+    "github-actions.cache-s3": "^1.0.1",
     "@actions/core": "^1.10.0",
     "@actions/exec": "^1.1.1",
     "@actions/glob": "^0.4.0",

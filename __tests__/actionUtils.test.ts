@@ -1,12 +1,12 @@
 import * as core from "@actions/core";
+import * as cache from "github-actions.cache-s3";
 
-import * as cache from "../src/backend";
 import { Events, RefKey } from "../src/constants";
 import * as actionUtils from "../src/utils/actionUtils";
 import * as testUtils from "../src/utils/testUtils";
 
 jest.mock("@actions/core");
-jest.mock("../src/backend");
+jest.mock("github-actions.cache-s3");
 
 beforeAll(() => {
     jest.spyOn(core, "getInput").mockImplementation((name, options) => {

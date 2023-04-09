@@ -1,6 +1,6 @@
 import * as core from "@actions/core";
+import * as cache from "github-actions.cache-s3";
 
-import * as cache from "../src/backend";
 import { Events, RefKey } from "../src/constants";
 import run from "../src/restore";
 import * as actionUtils from "../src/utils/actionUtils";
@@ -81,7 +81,11 @@ test("restore with no cache found", async () => {
         {
             lookupOnly: false
         },
-        { credentials: { accessKeyId: "", secretAccessKey: "" }, region: "" },
+        {
+            credentials: { accessKeyId: "", secretAccessKey: "" },
+            forcePathStyle: true,
+            region: ""
+        },
         ""
     );
 
@@ -125,7 +129,11 @@ test("restore with restore keys and no cache found", async () => {
         {
             lookupOnly: false
         },
-        { credentials: { accessKeyId: "", secretAccessKey: "" }, region: "" },
+        {
+            credentials: { accessKeyId: "", secretAccessKey: "" },
+            forcePathStyle: true,
+            region: ""
+        },
         ""
     );
 
@@ -168,7 +176,11 @@ test("restore with cache found for key", async () => {
         {
             lookupOnly: false
         },
-        { credentials: { accessKeyId: "", secretAccessKey: "" }, region: "" },
+        {
+            credentials: { accessKeyId: "", secretAccessKey: "" },
+            forcePathStyle: true,
+            region: ""
+        },
         ""
     );
 
@@ -214,7 +226,11 @@ test("restore with cache found for restore key", async () => {
         {
             lookupOnly: false
         },
-        { credentials: { accessKeyId: "", secretAccessKey: "" }, region: "" },
+        {
+            credentials: { accessKeyId: "", secretAccessKey: "" },
+            forcePathStyle: true,
+            region: ""
+        },
         ""
     );
 
@@ -260,7 +276,11 @@ test("Fail restore when fail on cache miss is enabled and primary + restore keys
         {
             lookupOnly: false
         },
-        { credentials: { accessKeyId: "", secretAccessKey: "" }, region: "" },
+        {
+            credentials: { accessKeyId: "", secretAccessKey: "" },
+            forcePathStyle: true,
+            region: ""
+        },
         ""
     );
 
@@ -304,7 +324,11 @@ test("restore when fail on cache miss is enabled and primary key doesn't match r
         {
             lookupOnly: false
         },
-        { credentials: { accessKeyId: "", secretAccessKey: "" }, region: "" },
+        {
+            credentials: { accessKeyId: "", secretAccessKey: "" },
+            forcePathStyle: true,
+            region: ""
+        },
         ""
     );
 
@@ -351,7 +375,11 @@ test("restore with fail on cache miss disabled and no cache found", async () => 
         {
             lookupOnly: false
         },
-        { credentials: { accessKeyId: "", secretAccessKey: "" }, region: "" },
+        {
+            credentials: { accessKeyId: "", secretAccessKey: "" },
+            forcePathStyle: true,
+            region: ""
+        },
         ""
     );
 

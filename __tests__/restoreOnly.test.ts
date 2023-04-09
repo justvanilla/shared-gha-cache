@@ -1,6 +1,6 @@
 import * as core from "@actions/core";
+import * as cache from "github-actions.cache-s3";
 
-import * as cache from "../src/backend";
 import { Events, RefKey } from "../src/constants";
 import run from "../src/restoreOnly";
 import * as actionUtils from "../src/utils/actionUtils";
@@ -82,7 +82,11 @@ test("restore with no cache found", async () => {
         {
             lookupOnly: false
         },
-        { credentials: { accessKeyId: "", secretAccessKey: "" }, region: "" },
+        {
+            credentials: { accessKeyId: "", secretAccessKey: "" },
+            forcePathStyle: true,
+            region: ""
+        },
         ""
     );
 
@@ -125,7 +129,11 @@ test("restore with restore keys and no cache found", async () => {
         {
             lookupOnly: false
         },
-        { credentials: { accessKeyId: "", secretAccessKey: "" }, region: "" },
+        {
+            credentials: { accessKeyId: "", secretAccessKey: "" },
+            forcePathStyle: true,
+            region: ""
+        },
         ""
     );
 
@@ -165,7 +173,11 @@ test("restore with cache found for key", async () => {
         {
             lookupOnly: false
         },
-        { credentials: { accessKeyId: "", secretAccessKey: "" }, region: "" },
+        {
+            credentials: { accessKeyId: "", secretAccessKey: "" },
+            forcePathStyle: true,
+            region: ""
+        },
         ""
     );
 
@@ -209,7 +221,11 @@ test("restore with cache found for restore key", async () => {
         {
             lookupOnly: false
         },
-        { credentials: { accessKeyId: "", secretAccessKey: "" }, region: "" },
+        {
+            credentials: { accessKeyId: "", secretAccessKey: "" },
+            forcePathStyle: true,
+            region: ""
+        },
         ""
     );
 

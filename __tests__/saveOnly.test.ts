@@ -1,13 +1,13 @@
 import * as core from "@actions/core";
+import * as cache from "github-actions.cache-s3";
 
-import * as cache from "../src/backend";
 import { Events, Inputs, RefKey } from "../src/constants";
 import run from "../src/saveOnly";
 import * as actionUtils from "../src/utils/actionUtils";
 import * as testUtils from "../src/utils/testUtils";
 
 jest.mock("@actions/core");
-jest.mock("../src/backend");
+jest.mock("github-actions.cache-s3");
 jest.mock("../src/utils/actionUtils");
 
 beforeAll(() => {
@@ -99,7 +99,11 @@ test("save with valid inputs uploads a cache", async () => {
         {
             uploadChunkSize: 4000000
         },
-        { credentials: { accessKeyId: "", secretAccessKey: "" }, region: "" },
+        {
+            credentials: { accessKeyId: "", secretAccessKey: "" },
+            forcePathStyle: true,
+            region: ""
+        },
         ""
     );
 
@@ -132,7 +136,11 @@ test("save failing logs the warning message", async () => {
         {
             uploadChunkSize: 4000000
         },
-        { credentials: { accessKeyId: "", secretAccessKey: "" }, region: "" },
+        {
+            credentials: { accessKeyId: "", secretAccessKey: "" },
+            forcePathStyle: true,
+            region: ""
+        },
         ""
     );
 

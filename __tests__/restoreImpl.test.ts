@@ -1,6 +1,6 @@
 import * as core from "@actions/core";
+import * as cache from "github-actions.cache-s3";
 
-import * as cache from "../src/backend";
 import { Events, Inputs, RefKey } from "../src/constants";
 import run from "../src/restoreImpl";
 import { StateProvider } from "../src/stateProvider";
@@ -129,7 +129,11 @@ test("restore on GHES with AC available ", async () => {
         {
             lookupOnly: false
         },
-        { credentials: { accessKeyId: "", secretAccessKey: "" }, region: "" },
+        {
+            credentials: { accessKeyId: "", secretAccessKey: "" },
+            forcePathStyle: true,
+            region: ""
+        },
         ""
     );
 
@@ -184,7 +188,11 @@ test("restore with too many keys should fail", async () => {
         {
             lookupOnly: false
         },
-        { credentials: { accessKeyId: "", secretAccessKey: "" }, region: "" },
+        {
+            credentials: { accessKeyId: "", secretAccessKey: "" },
+            forcePathStyle: true,
+            region: ""
+        },
         ""
     );
     expect(failedMock).toHaveBeenCalledWith(
@@ -211,7 +219,11 @@ test("restore with large key should fail", async () => {
         {
             lookupOnly: false
         },
-        { credentials: { accessKeyId: "", secretAccessKey: "" }, region: "" },
+        {
+            credentials: { accessKeyId: "", secretAccessKey: "" },
+            forcePathStyle: true,
+            region: ""
+        },
         ""
     );
     expect(failedMock).toHaveBeenCalledWith(
@@ -238,7 +250,11 @@ test("restore with invalid key should fail", async () => {
         {
             lookupOnly: false
         },
-        { credentials: { accessKeyId: "", secretAccessKey: "" }, region: "" },
+        {
+            credentials: { accessKeyId: "", secretAccessKey: "" },
+            forcePathStyle: true,
+            region: ""
+        },
         ""
     );
     expect(failedMock).toHaveBeenCalledWith(
@@ -274,7 +290,11 @@ test("restore with no cache found", async () => {
         {
             lookupOnly: false
         },
-        { credentials: { accessKeyId: "", secretAccessKey: "" }, region: "" },
+        {
+            credentials: { accessKeyId: "", secretAccessKey: "" },
+            forcePathStyle: true,
+            region: ""
+        },
         ""
     );
 
@@ -316,7 +336,11 @@ test("restore with restore keys and no cache found", async () => {
         {
             lookupOnly: false
         },
-        { credentials: { accessKeyId: "", secretAccessKey: "" }, region: "" },
+        {
+            credentials: { accessKeyId: "", secretAccessKey: "" },
+            forcePathStyle: true,
+            region: ""
+        },
         ""
     );
 
@@ -357,7 +381,11 @@ test("restore with cache found for key", async () => {
         {
             lookupOnly: false
         },
-        { credentials: { accessKeyId: "", secretAccessKey: "" }, region: "" },
+        {
+            credentials: { accessKeyId: "", secretAccessKey: "" },
+            forcePathStyle: true,
+            region: ""
+        },
         ""
     );
 
@@ -400,7 +428,11 @@ test("restore with cache found for restore key", async () => {
         {
             lookupOnly: false
         },
-        { credentials: { accessKeyId: "", secretAccessKey: "" }, region: "" },
+        {
+            credentials: { accessKeyId: "", secretAccessKey: "" },
+            forcePathStyle: true,
+            region: ""
+        },
         ""
     );
 
@@ -442,7 +474,11 @@ test("restore with lookup-only set", async () => {
         {
             lookupOnly: true
         },
-        { credentials: { accessKeyId: "", secretAccessKey: "" }, region: "" },
+        {
+            credentials: { accessKeyId: "", secretAccessKey: "" },
+            forcePathStyle: true,
+            region: ""
+        },
         ""
     );
 

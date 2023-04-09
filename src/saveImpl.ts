@@ -1,10 +1,10 @@
 import * as core from "@actions/core";
+import * as cache from "github-actions.cache-s3";
+import { getConfig } from "github-actions.cache-s3/lib/internal/config";
 
-import * as cache from "./backend";
 import { Events, Inputs, State } from "./constants";
 import { IStateProvider } from "./stateProvider";
 import * as utils from "./utils/actionUtils";
-import { getConfig } from "./utils/options";
 
 // Catch and log any unhandled exceptions.  These exceptions can leak out of the uploadChunk method in
 // @actions/toolkit when a failed upload closes the file descriptor causing any in-process reads to
@@ -53,7 +53,11 @@ async function saveImpl(stateProvider: IStateProvider): Promise<number | void> {
             required: true
         });
         const s3Bucket = core.getInput(Inputs.AwsBucket);
-        const s3Config = getConfig();
+        const s3Config = getConfig(
+            core.getInput(Inputs.AwsRegion),
+            core.getInput(Inputs.AwsAccessKeyId),
+            core.getInput(Inputs.AwsSecretAccessKey)
+        );
 
         cacheId = await cache.saveCache(
             cachePaths,
