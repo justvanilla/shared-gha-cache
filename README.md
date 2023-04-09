@@ -188,12 +188,16 @@ A cache key can include any of the contexts, functions, literals, and operators 
 For example, using the [`hashFiles`](https://docs.github.com/en/actions/learn-github-actions/expressions#hashfiles) function allows you to create a new cache when dependencies change.
 
 ```yaml
-  - uses: actions/cache@v3
+  - uses: justvanilla/shared-gha-cache@s3
     with:
       path: |
         path/to/dependencies
         some/other/dependencies
       key: ${{ runner.os }}-${{ hashFiles('**/lockfiles') }}
+      aws-region: ${{ secrets.CACHE_AWS_REGION }}
+      aws-bucket: ${{ secrets.CACHE_AWS_BUCKET }}
+      aws-access-key-id: ${{ secrets.CACHE_AWS_ACCESS_KEY_ID }}
+      aws-secret-access-key: ${{ secrets.CACHE_AWS_SECRET_ACCESS_KEY }}
 ```
 
 Additionally, you can use arbitrary command output in a cache key, such as a date or software version:
@@ -206,17 +210,21 @@ Additionally, you can use arbitrary command output in a cache key, such as a dat
       echo "date=$(/bin/date -u "+%Y%m%d")" >> $GITHUB_OUTPUT
     shell: bash
 
-  - uses: actions/cache@v3
+  - uses: justvanilla/shared-gha-cache@s3
     with:
       path: path/to/dependencies
       key: ${{ runner.os }}-${{ steps.get-date.outputs.date }}-${{ hashFiles('**/lockfiles') }}
+      aws-region: ${{ secrets.CACHE_AWS_REGION }}
+      aws-bucket: ${{ secrets.CACHE_AWS_BUCKET }}
+      aws-access-key-id: ${{ secrets.CACHE_AWS_ACCESS_KEY_ID }}
+      aws-secret-access-key: ${{ secrets.CACHE_AWS_SECRET_ACCESS_KEY }}
 ```
 
 See [Using contexts to create cache keys](https://help.github.com/en/actions/configuring-and-managing-workflows/caching-dependencies-to-speed-up-workflows#using-contexts-to-create-cache-keys)
 
 ## Cache Limits
 
-A repository can have up to 10GB of caches. Once the 10GB limit is reached, older caches will be evicted based on when the cache was last accessed.  Caches that are not accessed within the last week will also be evicted.
+Since the data is stored to AWS bucket of your own management, you are the kin
 
 ## Skipping steps based on cache-hit
 
@@ -228,7 +236,7 @@ Example:
 steps:
   - uses: actions/checkout@v3
 
-  - uses: actions/cache@v3
+  - uses: justvanilla/shared-gha-cache@s3
     id: cache
     with:
       path: path/to/dependencies
@@ -260,7 +268,7 @@ jobs:
 
       - name: Cache Primes
         id: cache-primes
-        uses: actions/cache@v3
+        uses: justvanilla/shared-gha-cache@s3
         with:
           path: prime-numbers
           key: primes
@@ -271,7 +279,7 @@ jobs:
 
       - name: Cache Numbers
         id: cache-numbers
-        uses: actions/cache@v3
+        uses: justvanilla/shared-gha-cache@s3
         with:
           path: numbers
           key: primes
@@ -287,7 +295,7 @@ jobs:
 
       - name: Cache Primes
         id: cache-primes
-        uses: actions/cache@v3
+        uses: justvanilla/shared-gha-cache@s3
         with:
           path: prime-numbers
           key: primes
