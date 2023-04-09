@@ -92,7 +92,7 @@ jobs:
 
     - name: Cache Primes
       id: cache-primes
-      uses: actions/cache@v3
+      uses: justvanilla/shared-gha-cache@s3
       with:
         path: prime-numbers
         key: ${{ runner.os }}-primes
