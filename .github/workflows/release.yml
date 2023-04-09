@@ -14,7 +14,7 @@ env:
 
 jobs:
   update_tag:
-    name: Update the major tag to include the  ${{ env.tag_name }} changes
+    name: Release the new action
     runs-on: ubuntu-latest
     permissions:
       contents: write
