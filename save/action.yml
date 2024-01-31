@@ -28,7 +28,7 @@ inputs:
     description: 'An AWS region where the bucket is located'
     required: true
 runs:
-  using: 'node16'
+  using: 'node20'
   main: '../dist/save-only/index.js'
 branding:
   icon: 'archive'
